@@ -19,6 +19,13 @@ object Dates {
     	 */
     	def -( unit: TimeUnit ): Date = unit.negate.increment( date )
     	
+    	def <( other: Date ): Boolean  = date.before(other) 
+    	def <=( other: Date ): Boolean = date.before(other) && date.equals(other)
+
+    	def >( other: Date ): Boolean  = date.after(other) 
+    	def >=( other: Date ): Boolean = date.after(other) && date.equals(other)
+
+    	
     	/**
     	 * Converts date to a calendar
     	 */
