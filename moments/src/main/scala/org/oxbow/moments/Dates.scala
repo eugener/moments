@@ -132,6 +132,34 @@ object Dates {
         
     }
     
+    /** 
+     * Creates a date. 
+     * Era, year, month and day default to current date values 
+     * Hour, minute, second and millisecond default to zero 
+     */
+    def date( era: Int = -1, 
+              year: Int = -1, 
+              month: Int = -1,
+              day: Int = -1, 
+              hour: Int = 0,
+              minute: Int = 0,
+              second: Int = 0, 
+              millisecond: Int = 0 ): Date = {
+        
+        val c = new Date().asCalendar
+        
+        if ( era >= 0 ) c.set( Calendar.ERA, era )
+        if ( year >= 0 ) c.set( Calendar.YEAR, year )
+        if ( month >= 0 ) c.set( Calendar.MONTH, month )
+        if ( day >= 0 ) c.set( Calendar.DAY_OF_MONTH, day )
+        c.set( Calendar.HOUR, hour )
+        c.set( Calendar.MINUTE, minute )
+        c.set( Calendar.SECOND, second )
+        c.set( Calendar.MILLISECOND, millisecond )
+        
+        c.getTime
+    }
+    
     /**
      * Full date and time
      */

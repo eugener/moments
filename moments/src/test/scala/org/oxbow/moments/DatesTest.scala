@@ -1,31 +1,52 @@
 package org.oxbow.moments
 
-import org.junit._
+import org.scalatest.FunSuite
+import org.scalatest.junit.AssertionsForJUnit
 import org.junit.Assert._
-import java.util.Calendar
+import org.junit.Test
+import java.util.Date
 import Dates._
+import java.util.Calendar
+import org.scalatest.junit.ShouldMatchersForJUnit
 
-@Test
-class DatesTest {
+class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
 
-    @Test
-    def testDayDuration() = {
+    @Test def dateToCalendarConversion = {
         
-        var c: Calendar = today.asCalendar
-        
-        c.add( Calendar.DAY_OF_MONTH, -1)
-        
-        println( "................ " + (today - 8.day) )
-        println( "................ " + c.getTime )
-        
-//        assertEquals( c.getTime, (today - 1.day) )
-        
-//        c = today.asCalendar
-//        c.add( Calendar.DAY_OF_MONTH, 8 )
-//        assertEquals( c.getTime, today + 8.days )
+        val dt = new Date
+        assert( dt == dt.asCalendar.getTime )
         
     }
-
+    
+    @Test def clearFields = {
+        
+        val dt = date( hour = 1, minute = 30, second = 15 ).clear( Calendar.HOUR, Calendar.MINUTE ) 
+        
+        assert( dt.hour == 0, "The hour is not cleaned" ) 
+        assert( dt.minute == 0, "The minute is not cleaned" )
+        assert( dt.second != 0, "The second is 0, but should not be" )
+        
+    }
+    
+    @Test def formatDate = {
+        
+        val s = date( year=2011, month=Calendar.JULY, day=2 ).format("yyyy-MM-dd")
+        assert( s == "2011-07-02", "Incorrect date formatting" )
+        
+    }
+    
+    @Test def dateAddtion = {
+        
+        val d = date( month=Calendar.JULY ) + 1.month
+        assert ( d == date( month=Calendar.AUGUST ), "Incorrect date addition" )
+        
+    }
+    
+     @Test def dateSubtraction = {
+        
+        val d = date( year=2011 ) - 11.years
+        assert ( d == date( year=2000 ), "Incorrect date substraction" )
+        
+    }
+    
 }
-
-
