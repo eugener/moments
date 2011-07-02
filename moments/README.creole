@@ -1,4 +1,4 @@
-== Simple Scala date/time DSL.
+=== Simple Scala date/time DSL.
  
 Consider following:
 
@@ -7,5 +7,7 @@ Consider following:
 {{{today - 3.months}}}
 
 {{{tomorrow - 10.years}}}
+
+{{{tomorrow > yesterday}}}
 
  
