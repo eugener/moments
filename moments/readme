@@ -1,0 +1,8 @@
+Simple Scala date/time DLS. 
+Consider following:
+
+  new Date + 1.day
+  today - 3.months
+  tomorrow - 10.years
+
+ 
