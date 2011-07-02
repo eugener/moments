@@ -1,4 +1,4 @@
-== Simple Scala date/time DSL.
+=== Simple Scala date/time DSL.
  
 Consider following:
 
