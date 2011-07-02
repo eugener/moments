@@ -1,8 +1,8 @@
-Simple Scala date/time DLS. 
+Simple Scala date/time DSL. 
 Consider following:
 
-  new Date + 1.day
-  today - 3.months
-  tomorrow - 10.years
+  {{{new Date + 1.day}}}
+  {{{today - 3.months}}}
+  {{{tomorrow - 10.years}}
 
  
