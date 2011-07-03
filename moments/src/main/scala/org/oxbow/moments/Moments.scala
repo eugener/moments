@@ -11,7 +11,8 @@ object Moments {
     
     implicit def int2timeUnit( amount: Int ): TimeUnitInt = new TimeUnitInt( amount )
     
-    final class SuperDate( date: Date ) {
+    
+    final case class SuperDate( date: Date ) extends Ordered[Date] {
         
         /**
          * Returns a copy of the date with time unit added
@@ -23,12 +24,16 @@ object Moments {
     	 */
     	def -( unit: TimeUnit ): Date = unit.applyTo( date, true )
     	
-    	def <( other: Date ): Boolean  = date.before(other) 
-    	def <=( other: Date ): Boolean = date.before(other) || date.equals(other)
+    	override def compare(that: Date): Int = {
+    	    
+    	    that match {
+    	        case null => return -1
+    	        case x if ( date==x ) => 0
+    	        case x  => if ( date.before(x)) -1 else 1 
+    	    }
 
-    	def >( other: Date ): Boolean  = date.after(other) 
-    	def >=( other: Date ): Boolean = date.after(other) || date.equals(other)
-
+    	}
+    	
     	def calendar: Calendar = {
     	   val c = Calendar.getInstance
     	   c.setTime( date )
@@ -123,6 +128,9 @@ object Moments {
     private[this] case class TimeUnitImpl( private val field: Int, override val amount: Int) extends TimeUnit {
         
         override def applyTo(date: Date, negate: Boolean = false ): Date = {
+            
+            if ( amount == 0 ) return new Date(date.getTime) 
+            
             val c: Calendar = date.calendar
             c.add( field, if (negate) -amount else amount )
             c.getTime

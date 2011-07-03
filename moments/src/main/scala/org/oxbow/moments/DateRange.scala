@@ -16,6 +16,22 @@ final case class DateRange( val begin: Option[Date] = None, val end: Option[Date
     
     def intersects( range: DateRange ): Boolean = includes( range.begin ) || includes( range.end )
     
+//    def intersection( range: DateRange ): Option[DateRange] = {
+//        
+//        if (!intersects( range )) return None
+//        None
+//    }
+    
+    def expand( beginAmount: TimeUnit=0.seconds, endAmount: TimeUnit=0.seconds  ): DateRange = {
+        
+        val a = if (isBeginOpen) None else Some( begin.get - beginAmount )
+        val b = if (isEndOpen)   None else Some( end.get + endAmount )
+        DateRange( a, b )
+        
+    }
+        
+    
+    
     def isBeginOpen = begin.isEmpty
     
     def isEndOpen = end.isEmpty
@@ -24,6 +40,6 @@ final case class DateRange( val begin: Option[Date] = None, val end: Option[Date
     
     def isInfinite = isBeginOpen && isEndOpen
     
-    def isEmpty = !isInfinite && begin == end
+    def isEmpty = begin == end && !isInfinite
     
 }

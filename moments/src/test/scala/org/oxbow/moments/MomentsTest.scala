@@ -33,7 +33,7 @@ class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
         assert ( date( day=22 ) - 3.weeks == date( day=1 ), "Incorrect week subtaction" )
     }
      
-     @Test def dateComparison = {
+    @Test def dateComparison = {
          
          assert( yesterday < today )
          assert( tomorrow > today )
