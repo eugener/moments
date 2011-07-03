@@ -48,5 +48,15 @@ class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
         assert ( d == date( year=2000 ), "Incorrect date substraction" )
         
     }
+     
+     @Test def dateComparison = {
+         
+         assert( yesterday < today )
+         assert( tomorrow > today )
+         
+         assert( tomorrow >= today )
+         assert( today >= today )
+         
+     }
     
 }
