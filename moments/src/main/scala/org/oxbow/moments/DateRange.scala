@@ -29,8 +29,6 @@ final case class DateRange( val begin: Option[Date] = None, val end: Option[Date
         DateRange( a, b )
         
     }
-        
-    
     
     def isBeginOpen = begin.isEmpty
     

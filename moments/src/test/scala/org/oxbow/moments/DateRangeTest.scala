@@ -28,7 +28,7 @@ class DateRangeTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     
     @Test def resize = {
         
-        val dr1 = DateRange( Some(date()), Some(date()) )
+        val dr1 = DateRange( Option(today), Option(today) )
         val dr2 = dr1.expand( 1.day, 1.day )
         assert( dr2.begin.get == yesterday && dr2.end.get == tomorrow )
         
