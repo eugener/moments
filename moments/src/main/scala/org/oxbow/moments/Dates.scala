@@ -6,8 +6,12 @@ import java.text.SimpleDateFormat
 import java.util.TimeZone
 
 object Dates {
+
+    implicit def date2x( date: Date ) = new SuperDate( date )
     
-    implicit def date2x( date: Date ) = new {
+    implicit def int2timeUnit( amount: Int ): TimeUnitInt = new TimeUnitInt( amount )
+    
+    final class SuperDate( date: Date ) {
         
         /**
          * Returns a copy of the date with time unit added
@@ -32,7 +36,7 @@ object Dates {
     	}
     	
     	/**
-    	 * Returns a copy of the date with provided fields cleared
+    	 * Returns a copy of the date with provided fields set to zero
     	 */
     	def clear( fields: Int* ): Date = {
     	    val c: Calendar = calendar
@@ -41,9 +45,24 @@ object Dates {
     	}
 
     	/**
-    	 * Returns a copy of the date with time portion cleared
+    	 * Returns a copy of the date with time portion set to zero
     	 */
     	def midnight: Date = clear( Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND )
+    	
+    	/**
+    	 * Returns a copy of the date representing first day of the month
+    	 */
+    	def monthBegin: Date = {
+    	    val c = calendar
+    	    c.set( Calendar.DAY_OF_MONTH, 1 )
+    	    c.getTime.midnight
+    	}
+    	
+    	/**
+    	 * Returns a copy of the date representing last day of the month
+    	 */
+    	def monthEnd: Date = date.monthBegin + 1.month - 1.day
+    	
     	
     	def era    = calendar.get(Calendar.ERA)
     	def year   = calendar.get(Calendar.YEAR)
@@ -111,8 +130,10 @@ object Dates {
         
     }
     
+    private[this] case class WeekTimeUnit( weeks: Int ) extends TimeUnitImpl( Calendar.DAY_OF_MONTH, weeks*7 )
     
-    implicit def int2timeUnit( amount: Int ) = new {
+    
+    final class TimeUnitInt( amount: Int ) {
 
         lazy val eras: TimeUnit = TimeUnitImpl(Calendar.ERA, amount)
         lazy val era : TimeUnit = eras
@@ -122,6 +143,10 @@ object Dates {
         
         lazy val months: TimeUnit = TimeUnitImpl(Calendar.MONTH, amount)
         lazy val month : TimeUnit = months
+
+        lazy val weeks: TimeUnit = WeekTimeUnit(amount)
+        lazy val week : TimeUnit = months
+
         
         lazy val days: TimeUnit = TimeUnitImpl(Calendar.DAY_OF_MONTH, amount)
         lazy val day : TimeUnit = days
@@ -151,7 +176,7 @@ object Dates {
               second: Int = 0, 
               millisecond: Int = 0 ): Date = {
         
-        val c: Calendar = new Date().calendar
+        val c: Calendar = now.calendar
         
         if ( era >= 0 ) c.set( Calendar.ERA, era )
         if ( year >= 0 ) c.set( Calendar.YEAR, year )
@@ -164,6 +189,19 @@ object Dates {
         
         c.getTime
     }
+    
+    final val January   = Calendar.JANUARY
+    final val February  = Calendar.FEBRUARY
+    final val March     = Calendar.MARCH
+    final val April     = Calendar.APRIL
+    final val May       = Calendar.MAY
+    final val June      = Calendar.JUNE
+    final val July      = Calendar.JULY
+    final val August    = Calendar.AUGUST
+    final val September = Calendar.SEPTEMBER
+    final val October   = Calendar.OCTOBER
+    final val November  = Calendar.NOVEMBER
+    final val December  = Calendar.DECEMBER
     
     /**
      * Full date and time

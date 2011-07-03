@@ -1,13 +1,12 @@
 package org.oxbow.moments
 
-import org.scalatest.FunSuite
-import org.scalatest.junit.AssertionsForJUnit
-import org.junit.Assert._
-import org.junit.Test
-import java.util.Date
-import Dates._
 import java.util.Calendar
+
+import org.junit.Test
+import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
+
+import Dates._
 
 class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
 
@@ -22,24 +21,18 @@ class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     }
     
     @Test def formatDate = {
-        
-        val s = date( year=2011, month=Calendar.JULY, day=2 ).format("yyyy-MM-dd")
+        val s = date( year=2011, month=July, day=2 ).format("yyyy-MM-dd")
         assert( s == "2011-07-02", "Incorrect date formatting" )
-        
     }
     
     @Test def dateAddtion = {
-        
-        val d = date( month=Calendar.JULY ) + 1.month
-        assert ( d == date( month=Calendar.AUGUST ), "Incorrect date addition" )
-        
+        assert ( date( month=July ) + 1.month == date( month=August ), "Incorrect month addition" )
+        assert ( date( day=1 ) + 2.weeks == date( day=15 ), "Incorrect week addition" )
     }
     
-     @Test def dateSubtraction = {
-        
-        val d = date( year=2011 ) - 11.years
-        assert ( d == date( year=2000 ), "Incorrect date substraction" )
-        
+    @Test def dateSubtraction = {
+        assert ( date( year=2011 ) - 11.years == date( year=2000 ), "Incorrect year substraction" )
+        assert ( date( day=22 ) - 3.weeks == date( day=1 ), "Incorrect week subtaction" )
     }
      
      @Test def dateComparison = {
@@ -51,5 +44,23 @@ class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
          assert( today >= today )
          
      }
-    
+     
+     @Test def monthBegin = {
+         
+         val year = 2011
+         val month = 7
+         val d = date( year=year, month=month, day=3 ).monthBegin
+         assert( d.year == year && d.month == month && d.day == 1 )
+         
+     }
+
+     @Test def monthEnd = {
+         
+         val year = 2011
+         val month = 7
+         val d = date( year=year, month=month, day=3 ).monthEnd
+         assert( d.year == year && d.month == month && d.day == 31 )
+         
+     }
+     
 }

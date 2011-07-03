@@ -1,11 +1,13 @@
 === Simple Scala date/time DSL.
  
-Consider following:
+Consider the following code:
 
-{{{new Date + 1.day}}} 
+{{{date(year=2011, month=July, day=3) + 1.day}}} 
 
 {{{today - 3.months}}}
 
 {{{tomorrow - 10.years}}}
+
+{{{tomorrow - 10.weeks}}}
  
 {{{tomorrow > yesterday}}}
