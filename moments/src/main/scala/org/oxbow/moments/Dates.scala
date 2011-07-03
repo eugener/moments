@@ -87,6 +87,8 @@ object Dates {
     	    
     	    dt
     	}
+    	
+    	def combine( end: Date ) = DateRange( Option(date), Option(end) )
 
     }
     
