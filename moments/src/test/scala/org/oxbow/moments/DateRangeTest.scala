@@ -10,11 +10,16 @@ import java.util.Calendar
 import org.scalatest.junit.ShouldMatchersForJUnit
 
 class DateRangeTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
-
-    val range = yesterday.combine(null)
+    
+    @Test def dateCheck: Unit = {
+        intercept[IllegalArgumentException] {
+        	tomorrow.combine(yesterday)
+        }
+    }
     
     @Test def includeDate = {
         
+        val range = yesterday.combine(null)
         assert( range.includes(Some(today)), "Date inclusion test failed"  )
         assert( range.includes(Some(yesterday)), "Date inclusion test failed"  )
         assert( range.includes(Some(yesterday - 5.days)) == false, "Date inclusion test failed"  )
