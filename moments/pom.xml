@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.oxbow</groupId>
   <artifactId>moments</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.5</version>
   <inceptionYear>2011</inceptionYear>
   <properties>
   	<scala.version>2.9.0-1</scala.version>

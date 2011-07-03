@@ -5,7 +5,7 @@ import org.scalatest.junit.AssertionsForJUnit
 import org.junit.Assert._
 import org.junit.Test
 import java.util.Date
-import Dates._
+import Moments._
 import java.util.Calendar
 import org.scalatest.junit.ShouldMatchersForJUnit
 
