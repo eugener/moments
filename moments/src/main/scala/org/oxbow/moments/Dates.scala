@@ -8,7 +8,7 @@ import java.util.TimeZone
 object Dates {
     
     implicit def date2x( date: Date ) = new {
-      
+        
         /**
          * Returns a copy of the date with time unit added
          */
@@ -25,21 +25,17 @@ object Dates {
     	def >( other: Date ): Boolean  = date.after(other) 
     	def >=( other: Date ): Boolean = date.after(other) || date.equals(other)
 
-    	
-    	/**
-    	 * Converts date to a calendar
-    	 */
-    	def asCalendar: Calendar = {
-	        val c = Calendar.getInstance
-	        c.setTime( date )
-	        c
-	    }
+    	def calendar: Calendar = {
+    	   val c = Calendar.getInstance
+    	   c.setTime( date )
+    	   c 
+    	}
     	
     	/**
     	 * Returns a copy of the date with provided fields cleared
     	 */
     	def clear( fields: Int* ): Date = {
-    	    val c = asCalendar
+    	    val c: Calendar = calendar
     	    fields.foreach( c.set( _, 0))
     	    c.getTime
     	}
@@ -49,19 +45,19 @@ object Dates {
     	 */
     	def midnight: Date = clear( Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND )
     	
-    	def era    = asCalendar.get(Calendar.ERA)
-    	def year   = asCalendar.get(Calendar.YEAR)
-    	def month  = asCalendar.get(Calendar.MONTH)
-    	def day    = asCalendar.get(Calendar.DAY_OF_MONTH)
-    	def hour   = asCalendar.get(Calendar.HOUR)
-    	def minute = asCalendar.get(Calendar.MINUTE)
-    	def second = asCalendar.get(Calendar.SECOND)
+    	def era    = calendar.get(Calendar.ERA)
+    	def year   = calendar.get(Calendar.YEAR)
+    	def month  = calendar.get(Calendar.MONTH)
+    	def day    = calendar.get(Calendar.DAY_OF_MONTH)
+    	def hour   = calendar.get(Calendar.HOUR)
+    	def minute = calendar.get(Calendar.MINUTE)
+    	def second = calendar.get(Calendar.SECOND)
     	
-    	def dayOfYear   = asCalendar.get(Calendar.DAY_OF_YEAR)
-    	def dayOfWeek   = asCalendar.get(Calendar.DAY_OF_WEEK)
+    	def dayOfYear   = calendar.get(Calendar.DAY_OF_YEAR)
+    	def dayOfWeek   = calendar.get(Calendar.DAY_OF_WEEK)
     	
-    	def weekOfYear  = asCalendar.get(Calendar.WEEK_OF_YEAR)
-    	def weekOfMonth = asCalendar.get(Calendar.WEEK_OF_MONTH)
+    	def weekOfYear  = calendar.get(Calendar.WEEK_OF_YEAR)
+    	def weekOfMonth = calendar.get(Calendar.WEEK_OF_MONTH)
 
     	/**
     	 * Formats date according to a format @see DateFormat
@@ -102,7 +98,7 @@ object Dates {
         val negate: TimeUnit
         
         def increment(date: Date): Date = {
-            val c: Calendar = date.asCalendar
+            val c: Calendar = date.calendar
             c.add(field, amount)
             c.getTime
         }
@@ -155,7 +151,7 @@ object Dates {
               second: Int = 0, 
               millisecond: Int = 0 ): Date = {
         
-        val c = new Date().asCalendar
+        val c: Calendar = new Date().calendar
         
         if ( era >= 0 ) c.set( Calendar.ERA, era )
         if ( year >= 0 ) c.set( Calendar.YEAR, year )

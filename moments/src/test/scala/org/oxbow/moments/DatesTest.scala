@@ -11,13 +11,6 @@ import org.scalatest.junit.ShouldMatchersForJUnit
 
 class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
 
-    @Test def dateToCalendarConversion = {
-        
-        val dt = new Date
-        assert( dt == dt.asCalendar.getTime )
-        
-    }
-    
     @Test def clearFields = {
         
         val dt = date( hour = 1, minute = 30, second = 15 ).clear( Calendar.HOUR, Calendar.MINUTE ) 
