@@ -7,10 +7,7 @@ final case class DateRange( val begin: Option[Date] = None, val end: Option[Date
 
     require( isOpen || begin.get <= end.get, "DateRange: Begin date should be <= end date"  )
     
-    def includes( date: Option[Date] ) : Boolean = date match {
-        case None    => false
-        case Some(d) => (begin.isEmpty || d >= begin.get ) && ( end.isEmpty || d <= end.get )  
-    }
+    def includes( date: Option[Date] ): Boolean = date.exists( d => begin.forall( d >= _ ) && end.forall( d <= _ ))
     
     def includes( range: DateRange ): Boolean = includes( range.begin ) && includes( range.end )
     
