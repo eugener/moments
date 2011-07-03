@@ -12,12 +12,12 @@ object Dates {
         /**
          * Returns a copy of the date with time unit added
          */
-    	def +( unit: TimeUnit ): Date = unit.increment( date )
+    	def +( unit: TimeUnit ): Date = unit.applyTo( date )
     	
     	/**
     	 * Returns a copy of the date with time unit subtracted
     	 */
-    	def -( unit: TimeUnit ): Date = unit.negate.increment( date )
+    	def -( unit: TimeUnit ): Date = unit.applyTo( date, true )
     	
     	def <( other: Date ): Boolean  = date.before(other) 
     	def <=( other: Date ): Boolean = date.before(other) || date.equals(other)
@@ -88,27 +88,27 @@ object Dates {
 
     }
     
+    
     /**
      * Abstract time unit
      */
     sealed trait TimeUnit {
-        
-        val field: Int
         val amount: Int
-        val negate: TimeUnit
-        
-        def increment(date: Date): Date = {
-            val c: Calendar = date.calendar
-            c.add(field, amount)
-            c.getTime
-        }
+        protected[Dates] def applyTo(date: Date, negate: Boolean = false): Date
     }
+    
     
     /**
      * Private implementation of time unit
      */
-    private[this] case class TimeUnitImpl( override val field: Int, override val amount: Int) extends TimeUnit {
-        lazy val negate = copy(amount= -amount) // use named parameter - only amount changing
+    private[this] case class TimeUnitImpl( private val field: Int, override val amount: Int) extends TimeUnit {
+        
+        override def applyTo(date: Date, negate: Boolean = false ): Date = {
+            val c: Calendar = date.calendar
+            c.add( field, if (negate) -amount else amount )
+            c.getTime
+        }
+        
     }
     
     
