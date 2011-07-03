@@ -1,18 +1,17 @@
 package org.oxbow.moments
 
-import java.util.Calendar
-
 import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
 
-import Dates._
+import Moments._
+import java.util.Calendar
 
-class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
+class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit { 
 
-    @Test def clearFields = {
+   @Test def clearFields = {
         
-        val dt = date( hour = 1, minute = 30, second = 15 ).clear( Calendar.HOUR, Calendar.MINUTE ) 
+        val dt = date( hour = 1, minute = 30, second = 15 ).clear( Hour, Minute ) 
         
         assert( dt.hour == 0, "The hour is not cleaned" ) 
         assert( dt.minute == 0, "The minute is not cleaned" )
@@ -31,7 +30,7 @@ class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     }
     
     @Test def dateSubtraction = {
-        assert ( date( year=2011 ) - 11.years == date( year=2000 ), "Incorrect year substraction" )
+        assert ( date( year=2011 ) - 11.years == date( year=2000 ), "Incorrect year subtraction" )
         assert ( date( day=22 ) - 3.weeks == date( day=1 ), "Incorrect week subtaction" )
     }
      
@@ -47,19 +46,19 @@ class DatesTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
      
      @Test def monthBegin = {
          
-         val year = 2011
-         val month = 7
-         val d = date( year=year, month=month, day=3 ).monthBegin
-         assert( d.year == year && d.month == month && d.day == 1 )
+         val y = 2011
+         val m = July
+         val d = date( year=y, month=m, day=3 ).monthBegin
+         assert( d.year == y && d.month == m && d.day == 1 )
          
      }
 
      @Test def monthEnd = {
          
-         val year = 2011
-         val month = 7
-         val d = date( year=year, month=month, day=3 ).monthEnd
-         assert( d.year == year && d.month == month && d.day == 31 )
+         val y = 2011
+         val m = July
+         val d = date( year=y, month=m, day=3 ).monthEnd
+         assert( d.year == y && d.month == m && d.day == 31 )
          
      }
      

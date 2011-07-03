@@ -1,7 +1,7 @@
 package org.oxbow.moments
 
 import java.util.Date
-import Dates._
+import Moments._
 
 final case class DateRange( val begin: Option[Date] = None, val end: Option[Date] = None ) {
 

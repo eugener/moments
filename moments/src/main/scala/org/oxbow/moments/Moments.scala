@@ -5,7 +5,7 @@ import java.util.Calendar
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 
-object Dates {
+object Moments {
 
     implicit def date2x( date: Date ) = new SuperDate( date )
     
@@ -47,14 +47,14 @@ object Dates {
     	/**
     	 * Returns a copy of the date with time portion set to zero
     	 */
-    	def midnight: Date = clear( Calendar.HOUR, Calendar.MINUTE, Calendar.SECOND, Calendar.MILLISECOND )
+    	def midnight: Date = clear( Hour, Minute, Second, Millisecond )
     	
     	/**
     	 * Returns a copy of the date representing first day of the month
     	 */
     	def monthBegin: Date = {
     	    val c = calendar
-    	    c.set( Calendar.DAY_OF_MONTH, 1 )
+    	    c.set( Day, 1 )
     	    c.getTime.midnight
     	}
     	
@@ -64,13 +64,13 @@ object Dates {
     	def monthEnd: Date = date.monthBegin + 1.month - 1.day
     	
     	
-    	def era    = calendar.get(Calendar.ERA)
-    	def year   = calendar.get(Calendar.YEAR)
-    	def month  = calendar.get(Calendar.MONTH)
-    	def day    = calendar.get(Calendar.DAY_OF_MONTH)
-    	def hour   = calendar.get(Calendar.HOUR)
-    	def minute = calendar.get(Calendar.MINUTE)
-    	def second = calendar.get(Calendar.SECOND)
+    	def era    = calendar.get(Era)
+    	def year   = calendar.get(Year)
+    	def month  = calendar.get(Month)
+    	def day    = calendar.get(Day)
+    	def hour   = calendar.get(Hour)
+    	def minute = calendar.get(Minute)
+    	def second = calendar.get(Second)
     	
     	def dayOfYear   = calendar.get(Calendar.DAY_OF_YEAR)
     	def dayOfWeek   = calendar.get(Calendar.DAY_OF_WEEK)
@@ -81,7 +81,7 @@ object Dates {
     	/**
     	 * Formats date according to a format @see DateFormat
     	 */
-    	def format( format: String ): String = new SimpleDateFormat(format).format(date) 
+    	def format( format: String ): String = (new SimpleDateFormat(format)).format(date) 
     	
     	/**
     	 * Returns GMT date 
@@ -113,7 +113,7 @@ object Dates {
      */
     sealed trait TimeUnit {
         val amount: Int
-        protected[Dates] def applyTo(date: Date, negate: Boolean = false): Date
+        def applyTo(date: Date, negate: Boolean = false): Date
     }
     
     
@@ -130,34 +130,30 @@ object Dates {
         
     }
     
-    private[this] case class WeekTimeUnit( weeks: Int ) extends TimeUnitImpl( Calendar.DAY_OF_MONTH, weeks*7 )
-    
-    
     final class TimeUnitInt( amount: Int ) {
 
-        lazy val eras: TimeUnit = TimeUnitImpl(Calendar.ERA, amount)
+        lazy val eras: TimeUnit = TimeUnitImpl(Era, amount)
         lazy val era : TimeUnit = eras
         
-        lazy val years: TimeUnit = TimeUnitImpl(Calendar.YEAR, amount)
+        lazy val years: TimeUnit = TimeUnitImpl(Year, amount)
         lazy val year : TimeUnit = years
         
-        lazy val months: TimeUnit = TimeUnitImpl(Calendar.MONTH, amount)
+        lazy val months: TimeUnit = TimeUnitImpl(Month, amount)
         lazy val month : TimeUnit = months
 
-        lazy val weeks: TimeUnit = WeekTimeUnit(amount)
+        lazy val weeks: TimeUnit = TimeUnitImpl(Day, amount*7 )
         lazy val week : TimeUnit = months
-
         
-        lazy val days: TimeUnit = TimeUnitImpl(Calendar.DAY_OF_MONTH, amount)
+        lazy val days: TimeUnit = TimeUnitImpl(Day, amount)
         lazy val day : TimeUnit = days
         
-        lazy val minutes: TimeUnit = TimeUnitImpl(Calendar.MINUTE, amount)
+        lazy val minutes: TimeUnit = TimeUnitImpl(Minute, amount)
         lazy val minute: TimeUnit  = minutes
         
-        lazy val seconds: TimeUnit = TimeUnitImpl(Calendar.SECOND, amount)
+        lazy val seconds: TimeUnit = TimeUnitImpl(Second, amount)
         lazy val second: TimeUnit  = seconds
         
-        lazy val milliseconds: TimeUnit = TimeUnitImpl(Calendar.MILLISECOND, amount)
+        lazy val milliseconds: TimeUnit = TimeUnitImpl(Millisecond, amount)
         lazy val millisecond: TimeUnit  = milliseconds
         
     }
@@ -189,6 +185,16 @@ object Dates {
         
         c.getTime
     }
+    
+    final val Era         = Calendar.ERA
+    final val Year        = Calendar.YEAR
+    final val Month       = Calendar.MONTH
+    final val Day         = Calendar.DAY_OF_MONTH
+    final val Hour        = Calendar.HOUR
+    final val Minute      = Calendar.MINUTE
+    final val Second      = Calendar.SECOND
+    final val Millisecond = Calendar.MILLISECOND
+    
     
     final val January   = Calendar.JANUARY
     final val February  = Calendar.FEBRUARY
