@@ -176,39 +176,7 @@ object Moments {
         
     }
     
-//    /** 
-//     * Creates a date. 
-//     * Era, year, month and day default to current date values 
-//     * Hour, minute, second and millisecond default to zero 
-//     */
-//    def date( era: TimeField = -1, 
-//              year: TimeField = -1, 
-//              month: TimeField = -1,
-//              day: TimeField = -1, 
-//              hour: TimeField = 0,
-//              minute: TimeField = 0,
-//              second: TimeField = 0, 
-//              millisecond: TimeField = 0 ): Date = {
-//        
-//        val c: Calendar = now.calendar
-//        
-//        if ( era >= 0 ) c.set( Calendar.ERA, era )
-//        if ( year >= 0 ) c.set( Calendar.YEAR, year )
-//        if ( month >= 0 ) c.set( Calendar.MONTH, month )
-//        if ( day >= 0 ) c.set( Calendar.DAY_OF_MONTH, day )
-//        c.set( Calendar.HOUR, hour )
-//        c.set( Calendar.MINUTE, minute )
-//        c.set( Calendar.SECOND, second )
-//        c.set( Calendar.MILLISECOND, millisecond )
-//        
-//        c.getTime
-//    }
-    
-    def date( units: TimeUnit* ): Date = {
-        var d = now
-        units.foreach( unit => d = unit.setTo(d) )
-        d
-    }
+    def date( units: TimeUnit* ): Date = units.foldLeft(now)((d,unit) => unit.setTo(d))
     
     final val Era         = Calendar.ERA
     final val Year        = Calendar.YEAR
