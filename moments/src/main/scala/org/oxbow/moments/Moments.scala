@@ -24,16 +24,20 @@ object Moments {
     	 */
     	def -( unit: TimeUnit ): Date = (-unit).addTo( date )
     	
-    	override def compare(that: Date): Int = {
-    	    
-    	    that match {
-    	        case null => return -1
-    	        case x if ( date==x ) => 0
-    	        case x  => if ( date.before(x)) -1 else 1 
-    	    }
-
-    	}
+    	/**
+    	 * Provides Ordered trait capabilities
+    	 */
+    	def compare(that: Date): Int = if (that==null) -1 else date.compareTo( that )
     	
+        def withCalendar( f: Calendar => Unit ): Date = {
+            val c = calendar
+            f( c )
+            c.getTime
+        }
+    	
+    	/**
+    	 * Converts date to a calendar
+    	 */
     	def calendar: Calendar = {
     	   val c = Calendar.getInstance
     	   c.setTime( date )
@@ -43,11 +47,7 @@ object Moments {
     	/**
     	 * Returns a copy of the date with provided fields set to zero
     	 */
-    	def clear( fields: Int* ): Date = {
-    	    val c: Calendar = calendar
-    	    fields.foreach( c.set( _, 0))
-    	    c.getTime
-    	}
+    	def clear( fields: Int* ): Date = withCalendar( c => fields.foreach( c.set( _, 0)) ) 
 
     	/**
     	 * Returns a copy of the date with time portion set to zero
@@ -57,11 +57,7 @@ object Moments {
     	/**
     	 * Returns a copy of the date representing first day of the month
     	 */
-    	def monthBegin: Date = {
-    	    val c = calendar
-    	    c.set( Day, 1 )
-    	    c.getTime.midnight
-    	}
+    	def monthBegin: Date = withCalendar( _.set( Day, 1 )).midnight 
     	
     	/**
     	 * Returns a copy of the date representing last day of the month
@@ -108,8 +104,6 @@ object Moments {
     	    dt
     	}
     	
-    	def combine( end: Date ) = DateRange( Option(date), Option(end) )
-
     }
     
     
@@ -129,17 +123,9 @@ object Moments {
      */
     private[this] case class TimeUnitImpl( private val field: Int, override val amount: Int) extends TimeUnit {
         
-        override def addTo(date: Date ): Date = {
-            val c: Calendar = date.calendar
-            c.add( field, amount )
-            c.getTime
-        }
+        override def addTo(date: Date): Date = date.withCalendar( _.add( field, amount ) )
         
-        override def setTo(date: Date): Date = {
-            val c: Calendar = date.calendar
-            c.set( field, amount )
-            c.getTime
-        }
+        override def setTo(date: Date): Date = date.withCalendar( _.set( field, amount ) )
         
         override def unary_-(): TimeUnit = copy( amount = -amount )
         
@@ -176,8 +162,6 @@ object Moments {
         
     }
     
-    def date( units: TimeUnit* ): Date = units.foldLeft(now)((d,unit) => unit.setTo(d))
-    
     final val Era         = Calendar.ERA
     final val Year        = Calendar.YEAR
     final val Month       = Calendar.MONTH
@@ -199,6 +183,17 @@ object Moments {
     final val October   = Calendar.OCTOBER
     final val November  = Calendar.NOVEMBER
     final val December  = Calendar.DECEMBER
+
+    /**
+     * Creates date/time, modified using provided units
+     */
+    def dateTime( units: TimeUnit* ): Date = units.foldLeft(now)((d,unit) => unit.setTo(d))
+    
+    /**
+     * Creates date modified using provided units with no time portion
+     */
+    def date( units: TimeUnit* ): Date = units.foldLeft(now)((d,unit) => unit.setTo(d)).midnight
+
     
     /**
      * Full date/time
