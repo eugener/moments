@@ -13,16 +13,16 @@ class DateRangeTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     
     @Test def dateCheck: Unit = {
         intercept[IllegalArgumentException] {
-        	tomorrow.combine(yesterday)
+        	new DateRange(tomorrow,yesterday)
         }
     }
     
     @Test def includeDate = {
         
-        val range = yesterday.combine(null)
+        val range = DateRange( Option(yesterday), None )
         assert( range.includes(today), "Date inclusion test failed"  )
         assert( range.includes(yesterday), "Date inclusion test failed"  )
-        assert( range.includes(yesterday - 5.days) == false, "Date inclusion test failed"  )
+        assert( !range.includes(yesterday - 5.days ), "Date inclusion test failed"  )
         
     }
     

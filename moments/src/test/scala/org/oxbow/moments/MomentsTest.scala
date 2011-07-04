@@ -11,7 +11,7 @@ class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     
    @Test def clearFields = {
         
-        val dt = date( 1.hour, 30.minutes, 15.seconds ).clear( Hour, Minute )
+        val dt = dateTime( 1.hour, 30.minutes, 15.seconds ).clear( Hour, Minute )
         
         assert( dt.hour == 0, "The hour is not cleaned" ) 
         assert( dt.minute == 0, "The minute is not cleaned" )
@@ -20,7 +20,7 @@ class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     }
     
     @Test def formatDate = {
-        val s = date( 2011.year, July.month, 2.day ).format("yyyy-MM-dd")
+        val s = dateTime( 2011.year, July.month, 2.day ).format("yyyy-MM-dd")
         assert( s == "2011-07-02", "Incorrect date formatting" )
     }
     
@@ -48,7 +48,7 @@ class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
          
          val y = 2011.year
          val m = July.month
-         val d = date( y, m, 3.day ).monthBegin
+         val d = dateTime( y, m, 3.day ).monthBegin
          assert( d.year == y.amount && d.month == m.amount && d.day == 1, "Beginning of month is calculated incorrectly" )
          
      }
@@ -57,7 +57,7 @@ class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
          
          val y = 2011.year
          val m = July.month
-         val d = date( y, m, 3.day ).monthEnd
+         val d = dateTime( y, m, 3.day ).monthEnd
          assert( d.year == y.amount && d.month == m.amount && d.day == 31, "End of month is calculated incorrectly" )
          
      }
