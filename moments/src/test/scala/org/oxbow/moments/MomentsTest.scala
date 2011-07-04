@@ -3,14 +3,15 @@ package org.oxbow.moments
 import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
-
 import Moments._
 
 class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit { 
 
+   
+    
    @Test def clearFields = {
         
-        val dt = date( hour = 1, minute = 30, second = 15 ).clear( Hour, Minute ) 
+        val dt = date( 1.hour, 30.minutes, 15.seconds ).clear( Hour, Minute )
         
         assert( dt.hour == 0, "The hour is not cleaned" ) 
         assert( dt.minute == 0, "The minute is not cleaned" )
@@ -19,18 +20,18 @@ class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     }
     
     @Test def formatDate = {
-        val s = date( year=2011, month=July, day=2 ).format("yyyy-MM-dd")
+        val s = date( 2011.year, July.month, 2.day ).format("yyyy-MM-dd")
         assert( s == "2011-07-02", "Incorrect date formatting" )
     }
     
     @Test def dateAddtion = {
-        assert ( date( month=July ) + 1.month == date( month=August ), "Incorrect month addition" )
-        assert ( date( day=1 ) + 2.weeks == date( day=15 ), "Incorrect week addition" )
+        assert ( date( July.month ) + 1.month == date( August.month ), "Incorrect month addition" )
+        assert ( date( 1.day ) + 2.weeks == date( 15.day ), "Incorrect week addition" )
     }
     
     @Test def dateSubtraction = {
-        assert ( date( year=2011 ) - 11.years == date( year=2000 ), "Incorrect year subtraction" )
-        assert ( date( day=22 ) - 3.weeks == date( day=1 ), "Incorrect week subtaction" )
+        assert ( date( 2011.year ) - 11.years == date( 2000.year ), "Incorrect year subtraction" )
+        assert ( date( 22.day ) - 3.weeks == date( 1.day ), "Incorrect week subtaction" )
     }
      
     @Test def dateComparison = {
@@ -45,19 +46,19 @@ class MomentsTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
      
      @Test def monthBegin = {
          
-         val y = 2011
-         val m = July
-         val d = date( year=y, month=m, day=3 ).monthBegin
-         assert( d.year == y && d.month == m && d.day == 1, "Beginning of month is calculated incorrectly" )
+         val y = 2011.year
+         val m = July.month
+         val d = date( y, m, 3.day ).monthBegin
+         assert( d.year == y.amount && d.month == m.amount && d.day == 1, "Beginning of month is calculated incorrectly" )
          
      }
 
      @Test def monthEnd = {
          
-         val y = 2011
-         val m = July
-         val d = date( year=y, month=m, day=3 ).monthEnd
-         assert( d.year == y && d.month == m && d.day == 31, "End of month is calculated incorrectly" )
+         val y = 2011.year
+         val m = July.month
+         val d = date( y, m, 3.day ).monthEnd
+         assert( d.year == y.amount && d.month == m.amount && d.day == 31, "End of month is calculated incorrectly" )
          
      }
      

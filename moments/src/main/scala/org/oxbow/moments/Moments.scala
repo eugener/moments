@@ -17,12 +17,12 @@ object Moments {
         /**
          * Returns a copy of the date with time unit added
          */
-    	def +( unit: TimeUnit ): Date = unit.applyTo( date )
+    	def +( unit: TimeUnit ): Date = unit.addTo( date )
     	
     	/**
     	 * Returns a copy of the date with time unit subtracted
     	 */
-    	def -( unit: TimeUnit ): Date = unit.applyTo( date, true )
+    	def -( unit: TimeUnit ): Date = (-unit).addTo( date )
     	
     	override def compare(that: Date): Int = {
     	    
@@ -118,7 +118,8 @@ object Moments {
      */
     sealed trait TimeUnit {
         val amount: Int
-        def applyTo(date: Date, negate: Boolean = false): Date
+        def addTo(date: Date): Date
+        def setTo(date: Date): Date
         def unary_-(): TimeUnit
     }
     
@@ -128,17 +129,19 @@ object Moments {
      */
     private[this] case class TimeUnitImpl( private val field: Int, override val amount: Int) extends TimeUnit {
         
-        override def applyTo(date: Date, negate: Boolean = false ): Date = {
-            
-            if ( amount == 0 ) return new Date(date.getTime) 
-            
+        override def addTo(date: Date ): Date = {
             val c: Calendar = date.calendar
-            c.add( field, if (negate) -amount else amount )
+            c.add( field, amount )
+            c.getTime
+        }
+        
+        override def setTo(date: Date): Date = {
+            val c: Calendar = date.calendar
+            c.set( field, amount )
             c.getTime
         }
         
         override def unary_-(): TimeUnit = copy( amount = -amount )
-
         
     }
     
@@ -159,6 +162,9 @@ object Moments {
         lazy val days: TimeUnit = TimeUnitImpl(Day, amount)
         lazy val day : TimeUnit = days
         
+        lazy val hours: TimeUnit = TimeUnitImpl(Hour, amount)
+        lazy val hour: TimeUnit  = minutes
+        
         lazy val minutes: TimeUnit = TimeUnitImpl(Minute, amount)
         lazy val minute: TimeUnit  = minutes
         
@@ -170,32 +176,38 @@ object Moments {
         
     }
     
-    /** 
-     * Creates a date. 
-     * Era, year, month and day default to current date values 
-     * Hour, minute, second and millisecond default to zero 
-     */
-    def date( era: Int = -1, 
-              year: Int = -1, 
-              month: Int = -1,
-              day: Int = -1, 
-              hour: Int = 0,
-              minute: Int = 0,
-              second: Int = 0, 
-              millisecond: Int = 0 ): Date = {
-        
-        val c: Calendar = now.calendar
-        
-        if ( era >= 0 ) c.set( Calendar.ERA, era )
-        if ( year >= 0 ) c.set( Calendar.YEAR, year )
-        if ( month >= 0 ) c.set( Calendar.MONTH, month )
-        if ( day >= 0 ) c.set( Calendar.DAY_OF_MONTH, day )
-        c.set( Calendar.HOUR, hour )
-        c.set( Calendar.MINUTE, minute )
-        c.set( Calendar.SECOND, second )
-        c.set( Calendar.MILLISECOND, millisecond )
-        
-        c.getTime
+//    /** 
+//     * Creates a date. 
+//     * Era, year, month and day default to current date values 
+//     * Hour, minute, second and millisecond default to zero 
+//     */
+//    def date( era: TimeField = -1, 
+//              year: TimeField = -1, 
+//              month: TimeField = -1,
+//              day: TimeField = -1, 
+//              hour: TimeField = 0,
+//              minute: TimeField = 0,
+//              second: TimeField = 0, 
+//              millisecond: TimeField = 0 ): Date = {
+//        
+//        val c: Calendar = now.calendar
+//        
+//        if ( era >= 0 ) c.set( Calendar.ERA, era )
+//        if ( year >= 0 ) c.set( Calendar.YEAR, year )
+//        if ( month >= 0 ) c.set( Calendar.MONTH, month )
+//        if ( day >= 0 ) c.set( Calendar.DAY_OF_MONTH, day )
+//        c.set( Calendar.HOUR, hour )
+//        c.set( Calendar.MINUTE, minute )
+//        c.set( Calendar.SECOND, second )
+//        c.set( Calendar.MILLISECOND, millisecond )
+//        
+//        c.getTime
+//    }
+    
+    def date( units: TimeUnit* ): Date = {
+        var d = now
+        units.foreach( unit => d = unit.setTo(d) )
+        d
     }
     
     final val Era         = Calendar.ERA
@@ -206,7 +218,6 @@ object Moments {
     final val Minute      = Calendar.MINUTE
     final val Second      = Calendar.SECOND
     final val Millisecond = Calendar.MILLISECOND
-    
     
     final val January   = Calendar.JANUARY
     final val February  = Calendar.FEBRUARY
@@ -222,7 +233,7 @@ object Moments {
     final val December  = Calendar.DECEMBER
     
     /**
-     * Full date and time
+     * Full date/time
      */
     def now = new Date
     

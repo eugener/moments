@@ -2,7 +2,7 @@
  
 Consider the following code:
 
-{{{date(year=2011, month=July, day=3) + 1.day}}} 
+{{{date(2011.year, July.month, 3.day) + 1.day}}} 
 
 {{{today - 3.months}}}
 
