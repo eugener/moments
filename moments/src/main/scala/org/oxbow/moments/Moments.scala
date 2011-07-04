@@ -119,6 +119,7 @@ object Moments {
     sealed trait TimeUnit {
         val amount: Int
         def applyTo(date: Date, negate: Boolean = false): Date
+        def unary_-(): TimeUnit
     }
     
     
@@ -135,6 +136,9 @@ object Moments {
             c.add( field, if (negate) -amount else amount )
             c.getTime
         }
+        
+        override def unary_-(): TimeUnit = copy( amount = -amount )
+
         
     }
     

@@ -20,17 +20,33 @@ class DateRangeTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     @Test def includeDate = {
         
         val range = yesterday.combine(null)
-        assert( range.includes(Some(today)), "Date inclusion test failed"  )
-        assert( range.includes(Some(yesterday)), "Date inclusion test failed"  )
-        assert( range.includes(Some(yesterday - 5.days)) == false, "Date inclusion test failed"  )
+        assert( range.includes(today), "Date inclusion test failed"  )
+        assert( range.includes(yesterday), "Date inclusion test failed"  )
+        assert( range.includes(yesterday - 5.days) == false, "Date inclusion test failed"  )
         
     }
     
-    @Test def resize = {
+    @Test def expand = {
         
-        val dr1 = DateRange( Option(today), Option(today) )
-        val dr2 = dr1.expand( 1.day, 1.day )
+        val dr1 = new DateRange( today )
+        val dr2 = dr1.expand( 1.day )
         assert( dr2.begin.get == yesterday && dr2.end.get == tomorrow )
+        
+    }
+    
+    @Test def shiftBack = {
+        
+        val dr1 = new DateRange( today )
+        val dr2 = dr1 << 1.day
+        assert( dr2.begin.get == yesterday && dr2.end.get == yesterday )
+        
+    }
+    
+    @Test def shiftForward = {
+        
+        val dr1 = new DateRange( today )
+        val dr2 = dr1 >> 1.day
+        assert( dr2.begin.get == tomorrow && dr2.end.get == tomorrow )
         
     }
     
