@@ -16,15 +16,17 @@ final case class DateRange( val begin: Option[Date] = None, val end: Option[Date
      */
     def includes( date: Date ): Boolean = Option(date).exists( d => begin.forall( d >= _ ) && end.forall( d <= _ ))
     
+    def includes( date: Option[Date] ): Boolean = includes(date.get)
+    
     /**
      * Returns true range is inside the date range
      */
-    def includes( range: DateRange ): Boolean = includes( range.begin.get ) && includes( range.end.get )
+    def includes( range: DateRange ): Boolean = includes( range.begin ) && includes( range.end )
     
     /**
      * Returns true if range intersects the date range
      */
-    def intersects( range: DateRange ): Boolean = includes( range.begin.get ) || includes( range.end.get )
+    def intersects( range: DateRange ): Boolean = includes( range.begin ) || includes( range.end )
     
 //    def intersection( range: DateRange ): Option[DateRange] = {
 //        
@@ -37,11 +39,7 @@ final case class DateRange( val begin: Option[Date] = None, val end: Option[Date
      * Begin is expanded into the past, end is expanded into the future
      */
     def expand( beginAmount: TimeUnit=0.seconds, endAmount: TimeUnit=0.seconds  ): DateRange = {
-        
-        val a = if (isBeginOpen) None else Some( begin.get - beginAmount )
-        val b = if (isEndOpen)   None else Some( end.get + endAmount )
-        DateRange( a, b )
-        
+        DateRange( begin.map( _ - beginAmount ), end.map( _ + endAmount ) )
     }
     
     /**

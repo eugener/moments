@@ -187,13 +187,15 @@ object Moments {
     /**
      * Creates date/time, modified using provided units
      */
-    def dateTime( units: TimeUnit* ): Date = units.foldLeft(now)((d,unit) => unit.setTo(d))
+    def dateTime( units: TimeUnit* ): Date = makeDate(units)
     
     /**
      * Creates date modified using provided units with no time portion
      */
-    def date( units: TimeUnit* ): Date = units.foldLeft(now)((d,unit) => unit.setTo(d)).midnight
+    def date( units: TimeUnit* ): Date = makeDate(units).midnight
 
+    
+    private def makeDate( units: Iterable[TimeUnit]) = units.foldLeft(now)((d,unit) => unit.setTo(d))
     
     /**
      * Full date/time
