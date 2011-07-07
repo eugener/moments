@@ -17,12 +17,12 @@ object Moments {
         /**
          * Returns a copy of the date with time unit added
          */
-    	def +( unit: TimeUnit ): Date = unit.addTo( date )
+    	def +( unit: TimeAmount ): Date = unit.addTo( date )
     	
     	/**
     	 * Returns a copy of the date with time unit subtracted
     	 */
-    	def -( unit: TimeUnit ): Date = (-unit).addTo( date )
+    	def -( unit: TimeAmount ): Date = (-unit).addTo( date )
     	
     	/**
     	 * Provides Ordered trait capabilities
@@ -47,7 +47,7 @@ object Moments {
     	/**
     	 * Returns a copy of the date with provided fields set to zero
     	 */
-    	def clear( fields: Int* ): Date = withCalendar( c => fields.foreach( c.set( _, 0)) ) 
+    	def clear( fields: TimeUnit* ): Date = withCalendar( c => fields.distinct.foreach( f =>c.set( f.field, 0)) ) 
 
     	/**
     	 * Returns a copy of the date with time portion set to zero
@@ -57,7 +57,7 @@ object Moments {
     	/**
     	 * Returns a copy of the date representing first day of the month
     	 */
-    	def monthBegin: Date = withCalendar( _.set( Day, 1 )).midnight 
+    	def monthBegin: Date = withCalendar( _.set( Day.field, 1 )).midnight 
     	
     	/**
     	 * Returns a copy of the date representing last day of the month
@@ -65,13 +65,13 @@ object Moments {
     	def monthEnd: Date = date.monthBegin + 1.month - 1.day
     	
     	
-    	def era    = calendar.get(Era)
-    	def year   = calendar.get(Year)
-    	def month  = calendar.get(Month)
-    	def day    = calendar.get(Day)
-    	def hour   = calendar.get(Hour)
-    	def minute = calendar.get(Minute)
-    	def second = calendar.get(Second)
+    	def era    = calendar.get(Era.field)
+    	def year   = calendar.get(Year.field)
+    	def month  = calendar.get(Month.field)
+    	def day    = calendar.get(Day.field)
+    	def hour   = calendar.get(Hour.field)
+    	def minute = calendar.get(Minute.field)
+    	def second = calendar.get(Second.field)
     	
     	def dayOfYear   = calendar.get(Calendar.DAY_OF_YEAR)
     	def dayOfWeek   = calendar.get(Calendar.DAY_OF_WEEK)
@@ -108,68 +108,74 @@ object Moments {
     
     
     /**
-     * Abstract time unit
+     * Abstract time unit amount 
      */
-    sealed trait TimeUnit {
+    sealed trait TimeAmount {
         val amount: Int
         def addTo(date: Date): Date
         def setTo(date: Date): Date
-        def unary_-(): TimeUnit
+        def unary_-(): TimeAmount
     }
+    
+    sealed trait TimeUnit {
+        protected[Moments] val field: Int
+    }
+    
+    private[this] case class TimeUnitImpl( protected[Moments] val field: Int ) extends TimeUnit
     
     
     /**
      * Private implementation of time unit
      */
-    private[this] case class TimeUnitImpl( private val field: Int, override val amount: Int) extends TimeUnit {
+    private[this] case class TimeAmountImpl( private val unit: TimeUnit, override val amount: Int) extends TimeAmount {
         
-        override def addTo(date: Date): Date = date.withCalendar( _.add( field, amount ) )
+        override def addTo(date: Date): Date = date.withCalendar( _.add( unit.field, amount ) )
         
-        override def setTo(date: Date): Date = date.withCalendar( _.set( field, amount ) )
+        override def setTo(date: Date): Date = date.withCalendar( _.set( unit.field, amount ) )
         
-        override def unary_-(): TimeUnit = copy( amount = -amount )
+        override def unary_-(): TimeAmount = copy( amount = -amount )
         
     }
     
     final class TimeUnitInt( amount: Int ) {
 
-        lazy val eras: TimeUnit = TimeUnitImpl(Era, amount)
-        lazy val era : TimeUnit = eras
+        lazy val eras: TimeAmount = TimeAmountImpl(Era, amount)
+        lazy val era : TimeAmount = eras
         
-        lazy val years: TimeUnit = TimeUnitImpl(Year, amount)
-        lazy val year : TimeUnit = years
+        lazy val years: TimeAmount = TimeAmountImpl(Year, amount)
+        lazy val year : TimeAmount = years
         
-        lazy val months: TimeUnit = TimeUnitImpl(Month, amount)
-        lazy val month : TimeUnit = months
+        lazy val months: TimeAmount = TimeAmountImpl(Month, amount)
+        lazy val month : TimeAmount = months
 
-        lazy val weeks: TimeUnit = TimeUnitImpl(Day, amount*7 )
-        lazy val week : TimeUnit = months
+        lazy val weeks: TimeAmount = TimeAmountImpl(Day, amount*7 )
+        lazy val week : TimeAmount = months
         
-        lazy val days: TimeUnit = TimeUnitImpl(Day, amount)
-        lazy val day : TimeUnit = days
+        lazy val days: TimeAmount = TimeAmountImpl(Day, amount)
+        lazy val day : TimeAmount = days
         
-        lazy val hours: TimeUnit = TimeUnitImpl(Hour, amount)
-        lazy val hour: TimeUnit  = minutes
+        lazy val hours: TimeAmount = TimeAmountImpl(Hour, amount)
+        lazy val hour: TimeAmount  = minutes
         
-        lazy val minutes: TimeUnit = TimeUnitImpl(Minute, amount)
-        lazy val minute: TimeUnit  = minutes
+        lazy val minutes: TimeAmount = TimeAmountImpl(Minute, amount)
+        lazy val minute: TimeAmount  = minutes
         
-        lazy val seconds: TimeUnit = TimeUnitImpl(Second, amount)
-        lazy val second: TimeUnit  = seconds
+        lazy val seconds: TimeAmount = TimeAmountImpl(Second, amount)
+        lazy val second: TimeAmount  = seconds
         
-        lazy val milliseconds: TimeUnit = TimeUnitImpl(Millisecond, amount)
-        lazy val millisecond: TimeUnit  = milliseconds
+        lazy val milliseconds: TimeAmount = TimeAmountImpl(Millisecond, amount)
+        lazy val millisecond: TimeAmount  = milliseconds
         
     }
     
-    final val Era         = Calendar.ERA
-    final val Year        = Calendar.YEAR
-    final val Month       = Calendar.MONTH
-    final val Day         = Calendar.DAY_OF_MONTH
-    final val Hour        = Calendar.HOUR
-    final val Minute      = Calendar.MINUTE
-    final val Second      = Calendar.SECOND
-    final val Millisecond = Calendar.MILLISECOND
+    final val Era: TimeUnit         = TimeUnitImpl(Calendar.ERA)
+    final val Year: TimeUnit        = TimeUnitImpl(Calendar.YEAR)
+    final val Month: TimeUnit       = TimeUnitImpl(Calendar.MONTH)
+    final val Day: TimeUnit         = TimeUnitImpl(Calendar.DAY_OF_MONTH)
+    final val Hour: TimeUnit        = TimeUnitImpl(Calendar.HOUR)
+    final val Minute: TimeUnit      = TimeUnitImpl(Calendar.MINUTE)
+    final val Second: TimeUnit      = TimeUnitImpl(Calendar.SECOND)
+    final val Millisecond: TimeUnit = TimeUnitImpl(Calendar.MILLISECOND)
     
     final val January   = Calendar.JANUARY
     final val February  = Calendar.FEBRUARY
@@ -187,15 +193,15 @@ object Moments {
     /**
      * Creates date/time, modified using provided units
      */
-    def dateTime( units: TimeUnit* ): Date = makeDate(units)
+    def dateTime( units: TimeAmount* ): Date = makeDate(units)
     
     /**
      * Creates date modified using provided units with no time portion
      */
-    def date( units: TimeUnit* ): Date = makeDate(units).midnight
+    def date( units: TimeAmount* ): Date = makeDate(units).midnight
 
     
-    private def makeDate( units: Iterable[TimeUnit]) = units.foldLeft(now)((d,unit) => unit.setTo(d))
+    private def makeDate( units: Iterable[TimeAmount]) = units.foldLeft(now)((d,unit) => unit.setTo(d))
     
     /**
      * Full date/time

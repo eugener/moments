@@ -38,20 +38,20 @@ final case class DateRange( val begin: Option[Date] = None, val end: Option[Date
      * Expands date range by provided amount.
      * Begin is expanded into the past, end is expanded into the future
      */
-    def expand( beginAmount: TimeUnit=0.seconds, endAmount: TimeUnit=0.seconds  ): DateRange = {
+    def expand( beginAmount: TimeAmount=0.seconds, endAmount: TimeAmount=0.seconds  ): DateRange = {
         DateRange( begin.map( _ - beginAmount ), end.map( _ + endAmount ) )
     }
     
     /**
      * Expands date range by the same amount
      */
-    def expand( amount: TimeUnit ): DateRange = expand( amount, amount )
+    def expand( amount: TimeAmount ): DateRange = expand( amount, amount )
     
-    def shiftBack( amount: TimeUnit ): DateRange = expand( amount, -amount )
-    def << ( amount: TimeUnit ): DateRange = shiftBack( amount )
+    def shiftBack( amount: TimeAmount ): DateRange = expand( amount, -amount )
+    def << ( amount: TimeAmount ): DateRange = shiftBack( amount )
     
-    def shiftForward( amount: TimeUnit ): DateRange = expand( -amount, amount )
-    def >> ( amount: TimeUnit ): DateRange = shiftForward( amount )
+    def shiftForward( amount: TimeAmount ): DateRange = expand( -amount, amount )
+    def >> ( amount: TimeAmount ): DateRange = shiftForward( amount )
     
     def isBeginOpen = begin.isEmpty
     

@@ -1,13 +1,10 @@
 package org.oxbow.moments
 
-import org.scalatest.FunSuite
-import org.scalatest.junit.AssertionsForJUnit
-import org.junit.Assert._
 import org.junit.Test
-import java.util.Date
-import Moments._
-import java.util.Calendar
+import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
+
+import Moments._
 
 class DateRangeTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     
