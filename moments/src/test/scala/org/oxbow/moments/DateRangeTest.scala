@@ -4,8 +4,6 @@ import org.junit.Test
 import org.scalatest.junit.AssertionsForJUnit
 import org.scalatest.junit.ShouldMatchersForJUnit
 
-import Moments._
-
 class DateRangeTest extends AssertionsForJUnit with ShouldMatchersForJUnit {
     
     @Test def dateCheck: Unit = {

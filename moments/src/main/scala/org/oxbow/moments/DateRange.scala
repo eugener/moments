@@ -1,9 +1,6 @@
 package org.oxbow.moments
 
-import java.util.Date
-import Moments._
-
-
+import java.util.Date
 final case class DateRange( val begin: Option[Date] = None, val end: Option[Date] = None ) {
 
     def this( a: Date, b: Date ) = this( Option(a), Option(b))
